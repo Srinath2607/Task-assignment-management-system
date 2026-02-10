@@ -1,0 +1,24 @@
+{
+    "name": "task-management-system",
+    "version": "1.0.0",
+    "description": "Task Assignment Management System - Full Stack MERN Application",
+    "scripts": {
+        "start": "powershell -ExecutionPolicy Bypass -File ./run.ps1",
+        "dev": "powershell -ExecutionPolicy Bypass -File ./run.ps1",
+        "backend": "cd backend && npm run dev",
+        "frontend": "cd frontend && npm run dev",
+        "install-all": "cd backend && npm install && cd ../frontend && npm install",
+        "clean": "cd backend && rmdir /s /q node_modules 2>nul & cd ../frontend && rmdir /s /q node_modules 2>nul",
+        "reinstall": "npm run clean && npm run install-all"
+    },
+    "keywords": [
+        "task-management",
+        "mern",
+        "react",
+        "nodejs",
+        "mongodb",
+        "express"
+    ],
+    "author": "",
+    "license": "ISC"
+}
