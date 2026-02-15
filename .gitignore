@@ -32,3 +32,9 @@ coverage/
 *.bak
 *.tmp
 .cache/
+
+# Session documentation (development notes)
+SESSION_*.md
+PROJECT_COMPLETE.md
+GIT_COMMIT_SUMMARY.md
+GITHUB_PUSH_COMMANDS.md

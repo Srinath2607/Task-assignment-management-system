@@ -81,8 +81,8 @@ A full-stack MERN (MongoDB, Express, React, Node.js) task management application
 
 ### **1. Clone the Repository**
 ```bash
-git clone https://github.com/yourusername/task-management-system.git
-cd task-management-system
+git clone https://github.com/Srinath2607/Task-assignment-management-system.git
+cd Task-assignment-management-system
 ```
 
 ### **2. Backend Setup**
@@ -211,14 +211,9 @@ task-management-system/
 │   ├── package.json
 │   └── vite.config.js
 │
-├── SESSION_1_COMPLETE.md         # Theme system docs
-├── SESSION_2_COMPLETE.md         # Priority system docs
-├── SESSION_3_COMPLETE.md         # Analytics docs
-├── SESSION_4_COMPLETE.md         # Charts docs
-├── SESSION_5_COMPLETE.md         # Toasts docs
-├── SESSION_6_COMPLETE.md         # Kanban docs
-├── SESSION_7_COMPLETE.md         # Loading states docs
-├── SESSION_8_COMPLETE.md         # Polish & mobile docs
+├── DEPLOYMENT.md                 # Deployment guide
+├── USER_GUIDE.md                 # User manual
+├── TESTING_CHECKLIST.md          # Testing checklist
 └── README.md                     # This file
 ```
 
@@ -360,9 +355,9 @@ This project is licensed under the MIT License.
 
 ## 👨‍💻 Author
 
-**Your Name**
-- GitHub: [@yourusername](https://github.com/yourusername)
-- LinkedIn: [Your Name](https://linkedin.com/in/yourprofile)
+**Srinath**
+- GitHub: [@Srinath2607](https://github.com/Srinath2607)
+- Project: [Task Assignment Management System](https://github.com/Srinath2607/Task-assignment-management-system)
 
 ---
 
