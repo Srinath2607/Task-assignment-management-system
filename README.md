@@ -1,275 +1,404 @@
-# Task Assignment Management System
+# 🚀 TaskFlow - Professional Task Management System
 
-A full-stack MERN application for managing task assignments with role-based access control.
+A full-stack MERN (MongoDB, Express, React, Node.js) task management application with role-based access control, drag-and-drop Kanban board, real-time analytics, and a beautiful dark/light theme.
 
-## Features
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Node](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen.svg)
+![React](https://img.shields.io/badge/react-18.3.1-blue.svg)
 
-### Authentication & Authorization
-- ✅ User registration and login
-- ✅ JWT-based authentication
-- ✅ Role-based access control (MANAGER & MEMBER)
-- ✅ Protected API routes
-- ✅ Secure password hashing
+---
 
-### Task Management
-- ✅ Create tasks with start date and deadline
-- ✅ Assign tasks to team members
-- ✅ View all tasks (filtered by role)
-- ✅ Update task status (PENDING, IN_PROGRESS, COMPLETED)
-- ✅ Real-time database persistence
+## ✨ Features
 
-### Business Rules
-- ✅ **Critical Rule**: Task deadline must not be earlier than assignment date
-- ✅ Validation at both frontend and backend
-- ✅ Proper error handling and user feedback
+### 🎨 **Modern UI/UX**
+- **Dark/Light Theme** - Toggle between beautiful dark and light modes
+- **Responsive Design** - Perfect on desktop, tablet, and mobile
+- **Micro-Interactions** - Smooth animations and hover effects
+- **Loading States** - Skeleton loaders for better perceived performance
+- **Toast Notifications** - Beautiful gradient notifications for user feedback
 
-## Tech Stack
+### 📊 **Task Management**
+- **Kanban Board** - Drag-and-drop interface for visual task management
+- **Grid View** - Traditional card-based task view
+- **Priority System** - Color-coded priorities (Critical, High, Medium, Low)
+- **Status Tracking** - Pending, In Progress, Completed
+- **Task Assignment** - Assign tasks to team members
+- **Deadline Management** - Track due dates and overdue tasks
 
-### Backend
-- Node.js
-- Express.js
-- MongoDB with Mongoose
-- JWT for authentication
-- bcryptjs for password hashing
+### 📈 **Analytics & Visualization**
+- **Real-time Metrics** - Total tasks, in progress, completed, overdue
+- **Interactive Charts** - Donut chart for task distribution
+- **Team Performance** - Bar chart showing team member productivity
+- **Gradient Cards** - Beautiful analytics cards with hover effects
 
-### Frontend
-- React with Vite
-- React Router for navigation
-- Axios for API calls
-- Modern CSS with animations and glassmorphism
+### 👥 **Role-Based Access Control**
+- **Manager Role** - Create tasks, assign to members, view team analytics
+- **Member Role** - View assigned tasks, update status, personal analytics
+- **JWT Authentication** - Secure token-based authentication
+- **Protected Routes** - Role-based route protection
 
-## Project Structure
+### ⚡ **Performance & Accessibility**
+- **Mobile-First** - Optimized for mobile devices
+- **Keyboard Navigation** - Full keyboard accessibility
+- **Screen Reader Support** - ARIA labels and semantic HTML
+- **Reduced Motion** - Respects user motion preferences
+- **High Contrast** - Supports high contrast mode
+- **Print Styles** - Optimized for printing
+
+---
+
+## 🛠️ Tech Stack
+
+### **Frontend**
+- **React 18.3.1** - UI library
+- **React Router DOM** - Client-side routing
+- **Axios** - HTTP client
+- **Recharts** - Data visualization
+- **@hello-pangea/dnd** - Drag-and-drop functionality
+- **React Toastify** - Toast notifications
+- **React Icons** - Icon library
+- **Vite** - Build tool
+
+### **Backend**
+- **Node.js** - Runtime environment
+- **Express.js** - Web framework
+- **MongoDB** - NoSQL database
+- **Mongoose** - MongoDB ODM
+- **JWT** - Authentication
+- **bcryptjs** - Password hashing
+- **dotenv** - Environment variables
+- **CORS** - Cross-origin resource sharing
+
+---
+
+## 📦 Installation
+
+### **Prerequisites**
+- Node.js >= 14.0.0
+- MongoDB (local or Atlas)
+- npm or yarn
+
+### **1. Clone the Repository**
+```bash
+git clone https://github.com/yourusername/task-management-system.git
+cd task-management-system
+```
+
+### **2. Backend Setup**
+```bash
+cd backend
+npm install
+```
+
+Create `.env` file in backend directory:
+```env
+PORT=5001
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_super_secret_jwt_key
+JWT_EXPIRE=7d
+NODE_ENV=development
+```
+
+### **3. Frontend Setup**
+```bash
+cd frontend
+npm install
+```
+
+### **4. Run the Application**
+
+**Backend (Terminal 1):**
+```bash
+cd backend
+npm start
+```
+
+**Frontend (Terminal 2):**
+```bash
+cd frontend
+npm run dev
+```
+
+**Access the app:**
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:5001/api
+
+---
+
+## 🎯 Usage
+
+### **1. Register an Account**
+- Navigate to http://localhost:5173
+- Click "Register"
+- Fill in your details
+- Select role: **MANAGER** (to create tasks) or **MEMBER** (to view assigned tasks)
+
+### **2. Login**
+- Enter your email and password
+- Click "Login"
+
+### **3. Manager Dashboard**
+- **Create Tasks**: Click "+ Create Task" button
+- **Assign Tasks**: Select team member from dropdown
+- **View Analytics**: See metrics and charts
+- **Kanban Board**: Click Kanban icon to switch views
+- **Drag Tasks**: Drag tasks between columns to update status
+
+### **4. Member Dashboard**
+- **View Tasks**: See all assigned tasks
+- **Update Status**: Change task status via dropdown or Kanban
+- **Personal Analytics**: View your task statistics
+- **Kanban Board**: Drag your tasks to update status
+
+### **5. Theme Toggle**
+- Click sun/moon icon in navbar
+- Toggle between dark and light modes
+
+---
+
+## 📁 Project Structure
 
 ```
 task-management-system/
 ├── backend/
 │   ├── config/
-│   │   └── db.js
+│   │   └── db.js                 # MongoDB connection
 │   ├── controllers/
-│   │   ├── authController.js
-│   │   └── taskController.js
+│   │   ├── authController.js     # Authentication logic
+│   │   └── taskController.js     # Task CRUD operations
 │   ├── middleware/
-│   │   └── auth.js
+│   │   └── authMiddleware.js     # JWT verification
 │   ├── models/
-│   │   ├── User.js
-│   │   └── Task.js
+│   │   ├── User.js               # User schema
+│   │   └── Task.js               # Task schema
 │   ├── routes/
-│   │   ├── authRoutes.js
-│   │   └── taskRoutes.js
-│   ├── .env
+│   │   ├── authRoutes.js         # Auth endpoints
+│   │   └── taskRoutes.js         # Task endpoints
+│   ├── .env                      # Environment variables
+│   ├── server.js                 # Express server
+│   └── package.json
+│
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── AnalyticsCard.jsx
+│   │   │   ├── Badge.jsx
+│   │   │   ├── KanbanBoard.jsx
+│   │   │   ├── KanbanColumn.jsx
+│   │   │   ├── KanbanCard.jsx
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── ProtectedRoute.jsx
+│   │   │   ├── Skeleton.jsx
+│   │   │   ├── SkeletonLoaders.jsx
+│   │   │   ├── TaskDistributionChart.jsx
+│   │   │   ├── TeamPerformanceChart.jsx
+│   │   │   └── ThemeToggle.jsx
+│   │   ├── context/
+│   │   │   ├── AuthContext.jsx
+│   │   │   └── ThemeContext.jsx
+│   │   ├── pages/
+│   │   │   ├── Login.jsx
+│   │   │   ├── Register.jsx
+│   │   │   ├── ManagerDashboard.jsx
+│   │   │   └── MemberDashboard.jsx
+│   │   ├── services/
+│   │   │   └── api.js            # API service layer
+│   │   ├── App.jsx
+│   │   ├── index.css             # Global styles
+│   │   └── main.jsx
 │   ├── package.json
-│   └── server.js
-└── frontend/
-    ├── src/
-    │   ├── components/
-    │   │   ├── Navbar.jsx
-    │   │   └── ProtectedRoute.jsx
-    │   ├── context/
-    │   │   └── AuthContext.jsx
-    │   ├── pages/
-    │   │   ├── Login.jsx
-    │   │   ├── Register.jsx
-    │   │   ├── ManagerDashboard.jsx
-    │   │   └── MemberDashboard.jsx
-    │   ├── services/
-    │   │   └── api.js
-    │   ├── App.jsx
-    │   ├── main.jsx
-    │   └── index.css
-    └── package.json
+│   └── vite.config.js
+│
+├── SESSION_1_COMPLETE.md         # Theme system docs
+├── SESSION_2_COMPLETE.md         # Priority system docs
+├── SESSION_3_COMPLETE.md         # Analytics docs
+├── SESSION_4_COMPLETE.md         # Charts docs
+├── SESSION_5_COMPLETE.md         # Toasts docs
+├── SESSION_6_COMPLETE.md         # Kanban docs
+├── SESSION_7_COMPLETE.md         # Loading states docs
+├── SESSION_8_COMPLETE.md         # Polish & mobile docs
+└── README.md                     # This file
 ```
 
-## Installation & Setup
+---
 
-### Prerequisites
-- Node.js (v14 or higher)
-- MongoDB (local or Atlas)
-- npm or yarn
+## 🔌 API Endpoints
 
-### Backend Setup
-
-1. Navigate to backend directory:
-```bash
-cd backend
+### **Authentication**
+```
+POST   /api/auth/register    # Register new user
+POST   /api/auth/login       # Login user
 ```
 
-2. Install dependencies:
-```bash
-npm install
+### **Tasks**
+```
+GET    /api/tasks            # Get all tasks (role-based)
+GET    /api/tasks/:id        # Get single task
+POST   /api/tasks            # Create task (Manager only)
+PUT    /api/tasks/:id/status # Update task status
+PUT    /api/tasks/:id/assign # Assign task (Manager only)
+GET    /api/tasks/members/list # Get all members
 ```
 
-3. Configure environment variables:
-Create a `.env` file with:
+### **Health Check**
 ```
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/task-management
-JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
-JWT_EXPIRE=7d
-NODE_ENV=development
+GET    /api/health           # API health status
 ```
 
-4. Start MongoDB (if running locally):
-```bash
-mongod
-```
+---
 
-5. Start the backend server:
-```bash
-npm run dev
-```
+## 🎨 Design System
 
-Backend will run on `http://localhost:5000`
+### **Colors**
+- **Primary**: #6366f1 (Indigo)
+- **Success**: #10b981 (Green)
+- **Warning**: #f59e0b (Amber)
+- **Error**: #ef4444 (Red)
+- **Info**: #3b82f6 (Blue)
 
-### Frontend Setup
+### **Priority Colors**
+- **Critical**: #ef4444 (Red)
+- **High**: #f97316 (Orange)
+- **Medium**: #eab308 (Yellow)
+- **Low**: #22c55e (Green)
 
-1. Navigate to frontend directory:
-```bash
-cd frontend
-```
+### **Typography**
+- **Headings**: Poppins
+- **Body**: Inter
 
-2. Install dependencies:
-```bash
-npm install
-```
+### **Spacing Scale**
+- XS: 4px
+- SM: 8px
+- MD: 16px
+- LG: 24px
+- XL: 32px
+- 2XL: 48px
 
-3. Start the development server:
-```bash
-npm run dev
-```
+---
 
-Frontend will run on `http://localhost:5173`
+## 📱 Responsive Breakpoints
 
-## API Endpoints
+- **Small Mobile**: < 480px
+- **Mobile**: < 768px
+- **Tablet**: 769px - 1024px
+- **Desktop**: > 1024px
 
-### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - Login user
-- `GET /api/auth/me` - Get current user (Protected)
+---
 
-### Tasks
-- `GET /api/tasks` - Get all tasks (Protected, filtered by role)
-- `POST /api/tasks` - Create task (Protected, MANAGER only)
-- `GET /api/tasks/:id` - Get single task (Protected)
-- `PUT /api/tasks/:id/status` - Update task status (Protected)
-- `PUT /api/tasks/:id/assign` - Assign task to member (Protected, MANAGER only)
-- `GET /api/tasks/members/list` - Get all members (Protected, MANAGER only)
+## 🧪 Testing
 
-## User Roles
+### **Manual Testing Checklist**
+- [ ] User registration works
+- [ ] User login works
+- [ ] Manager can create tasks
+- [ ] Manager can assign tasks
+- [ ] Member can view assigned tasks
+- [ ] Task status updates work
+- [ ] Kanban drag-and-drop works
+- [ ] Charts display correctly
+- [ ] Theme toggle works
+- [ ] Mobile responsive works
+- [ ] Toast notifications appear
+- [ ] Loading states show
 
-### MANAGER
-- Register and login
-- Create tasks with start date and deadline
-- Assign tasks to members
-- View all tasks and assignments
-- See task status updates
+### **Browser Testing**
+- [ ] Chrome
+- [ ] Firefox
+- [ ] Safari
+- [ ] Edge
 
-### MEMBER
-- Register and login
-- View assigned tasks
-- Update task progress (PENDING → IN_PROGRESS → COMPLETED)
-- See task details and deadlines
+### **Device Testing**
+- [ ] Desktop (1920x1080)
+- [ ] Tablet (768x1024)
+- [ ] Mobile (375x667)
 
-## Business Rule Implementation
+---
 
-The critical business rule "**Task deadline must not be earlier than assignment date**" is enforced at multiple levels:
+## 🚀 Deployment
 
-1. **Database Model** (Task.js):
-   - Pre-save hook validates the rule
-   - Prevents invalid data from being saved
+### **Backend Deployment (Render/Railway)**
+1. Create account on Render or Railway
+2. Connect GitHub repository
+3. Set environment variables
+4. Deploy backend service
 
-2. **Backend Controller** (taskController.js):
-   - Validation in `createTask` and `assignTask` functions
-   - Returns error message if rule is violated
+### **Frontend Deployment (Vercel/Netlify)**
+1. Create account on Vercel or Netlify
+2. Connect GitHub repository
+3. Set build command: `npm run build`
+4. Set output directory: `dist`
+5. Deploy
 
-3. **Frontend**:
-   - User-friendly error messages
-   - Date pickers for easy validation
+### **Environment Variables**
+Make sure to set these in your deployment platform:
+- `MONGODB_URI`
+- `JWT_SECRET`
+- `JWT_EXPIRE`
+- `NODE_ENV=production`
 
-## Security Features
+---
 
-- Password hashing with bcryptjs
-- JWT token-based authentication
-- Protected routes with middleware
-- Role-based access control
-- Environment variables for sensitive data
-- CORS enabled for frontend-backend communication
+## 🤝 Contributing
 
-## Database Schema
+Contributions are welcome! Please follow these steps:
 
-### User Model
-```javascript
-{
-  name: String,
-  email: String (unique),
-  password: String (hashed),
-  role: String (MANAGER | MEMBER),
-  createdAt: Date
-}
-```
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-### Task Model
-```javascript
-{
-  title: String,
-  description: String,
-  startDate: Date,
-  deadline: Date,
-  status: String (PENDING | IN_PROGRESS | COMPLETED),
-  createdBy: ObjectId (ref: User),
-  assignedTo: ObjectId (ref: User),
-  assignedDate: Date,
-  createdAt: Date,
-  updatedAt: Date
-}
-```
+---
 
-## Testing the Application
+## 📝 License
 
-1. **Register Users**:
-   - Create a MANAGER account
-   - Create one or more MEMBER accounts
+This project is licensed under the MIT License.
 
-2. **Login as MANAGER**:
-   - Create tasks
-   - Assign tasks to members
-   - View all tasks
+---
 
-3. **Login as MEMBER**:
-   - View assigned tasks
-   - Update task status
-   - See task details
+## 👨‍💻 Author
 
-4. **Test Business Rule**:
-   - Try creating a task with deadline earlier than today
-   - Try assigning an old task (deadline before today)
-   - Verify error messages appear
+**Your Name**
+- GitHub: [@yourusername](https://github.com/yourusername)
+- LinkedIn: [Your Name](https://linkedin.com/in/yourprofile)
 
-## Design Features
+---
 
-- Modern dark theme with gradient accents
-- Glassmorphism effects
-- Smooth animations and transitions
-- Responsive design for all devices
-- Premium typography (Inter font)
-- Interactive hover effects
-- Loading states and error handling
-- Empty states with helpful messages
+## 🙏 Acknowledgments
 
-## Future Enhancements
+- React team for the amazing library
+- MongoDB for the database
+- Recharts for beautiful charts
+- @hello-pangea/dnd for drag-and-drop
+- All open-source contributors
 
-- Task editing and deletion
-- Task comments and attachments
-- Email notifications
-- Task priority levels
-- Advanced filtering and search
-- Task analytics and reports
-- Team management
-- Calendar view
+---
 
-## License
+## 📧 Support
 
-MIT
+For support, email your@email.com or open an issue on GitHub.
 
-## Author
+---
 
-Full Stack Development Project
+## 🎉 Features Showcase
+
+### **Dark Mode**
+![Dark Mode](screenshots/dark-mode.png)
+
+### **Light Mode**
+![Light Mode](screenshots/light-mode.png)
+
+### **Kanban Board**
+![Kanban Board](screenshots/kanban-board.png)
+
+### **Analytics Dashboard**
+![Analytics](screenshots/analytics.png)
+
+### **Mobile Responsive**
+![Mobile](screenshots/mobile.png)
+
+---
+
+**Built with ❤️ using MERN Stack**
