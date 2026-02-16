@@ -421,6 +421,9 @@ textarea.form-control {
 }
 
 .navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
   font-size: 24px;
   font-weight: 800;
   font-family: var(--font-heading);
@@ -429,6 +432,12 @@ textarea.form-control {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-decoration: none;
+}
+
+.navbar-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
 }
 
 .navbar-nav {

@@ -16,6 +16,7 @@ const Navbar = () => {
             <div className="container">
                 <div className="navbar-content">
                     <a href="/" className="navbar-brand">
+                        <img src="/vite.svg" alt="Logo" className="navbar-logo" />
                         TaskFlow
                     </a>
                     <div className="navbar-nav">
