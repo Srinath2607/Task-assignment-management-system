@@ -154,3 +154,50 @@ exports.getMe = async (req, res) => {
         });
     }
 };
+
+// @desc    Delete user
+// @route   DELETE /api/auth/users/:id
+// @access  Private/Manager
+exports.deleteUser = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        // Prevent deleting self from management
+        if (user._id.toString() === req.user.id.toString()) {
+            return res.status(400).json({
+                success: false,
+                message: 'You cannot delete your own manager account'
+            });
+        }
+
+        // Import Task model inside to avoid potential circular dependency
+        const Task = require('../models/Task');
+
+        // Unassign tasks assigned to this user before deleting them
+        await Task.updateMany(
+            { assignedTo: user._id },
+            { assignedTo: null, assignedDate: null }
+        );
+
+        await user.deleteOne();
+
+        res.status(200).json({
+            success: true,
+            message: 'User removed successfully and tasks were unassigned'
+        });
+    } catch (error) {
+        console.error('Delete user error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error deleting user',
+            error: error.message
+        });
+    }
+};

@@ -2396,6 +2396,83 @@ textarea:focus-visible {
 }
 
 /* Print styles */
+/* Team Management Styles */
+.team-management-section {
+  margin-top: var(--spacing-xxl);
+  padding-bottom: var(--spacing-xxl);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.section-icon {
+  font-size: 24px;
+  color: var(--secondary);
+}
+
+.section-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.member-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.member-table th {
+  padding: var(--spacing-md);
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-color);
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+}
+
+.member-table td {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.member-table tr:hover {
+  background: var(--bg-secondary);
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.btn-delete {
+  color: var(--danger);
+  opacity: 0.7;
+}
+
+.btn-delete:hover {
+  background: rgba(239, 68, 68, 0.1);
+  opacity: 1;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
 @media print {
 
   .navbar,

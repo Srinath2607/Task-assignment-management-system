@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { taskService } from '../services/api';
+import { taskService, authService } from '../services/api';
 import { toast } from 'react-toastify';
 import Navbar from '../components/Navbar';
 import { PriorityBadge, StatusBadge } from '../components/Badge';
@@ -8,7 +8,7 @@ import TaskDistributionChart from '../components/TaskDistributionChart';
 import TeamPerformanceChart from '../components/TeamPerformanceChart';
 import KanbanBoard from '../components/KanbanBoard';
 import { DashboardSkeleton } from '../components/SkeletonLoaders';
-import { FiList, FiClock, FiCheckCircle, FiAlertCircle, FiGrid, FiTrello } from 'react-icons/fi';
+import { FiList, FiClock, FiCheckCircle, FiAlertCircle, FiGrid, FiTrello, FiUsers, FiTrash2 } from 'react-icons/fi';
 
 const ManagerDashboard = () => {
     const [tasks, setTasks] = useState([]);
@@ -96,6 +96,21 @@ const ManagerDashboard = () => {
             fetchTasks();
         } catch (err) {
             toast.error(err.response?.data?.message || 'Failed to update task status');
+        }
+    };
+
+    const handleDeleteUser = async (user) => {
+        if (!window.confirm(`Are you sure you want to remove ${user.name}? This will also unassign all their tasks.`)) {
+            return;
+        }
+
+        try {
+            await authService.deleteUser(user._id);
+            toast.success('User removed successfully');
+            fetchMembers(); // Update members list
+            fetchTasks();   // Update tasks list as they are now unassigned
+        } catch (err) {
+            toast.error(err.response?.data?.message || 'Failed to remove user');
         }
     };
 
@@ -237,6 +252,7 @@ const ManagerDashboard = () => {
                                     </div>
 
                                     {/* Task Grid */}
+                                    <h2 className="section-title">Team Tasks</h2>
                                     <div className="task-grid">
                                         {tasks.map((task) => (
                                             <div key={task._id} className="card task-card">
@@ -292,6 +308,54 @@ const ManagerDashboard = () => {
                             )}
                         </>
                     )}
+
+                    {/* Team Management Section */}
+                    <div className="team-management-section">
+                        <div className="section-header">
+                            <FiUsers className="section-icon" />
+                            <h2 className="section-title">Team Management</h2>
+                        </div>
+                        <div className="card team-card">
+                            <div className="member-list">
+                                {members.length === 0 ? (
+                                    <p className="empty-msg">No team members registered yet.</p>
+                                ) : (
+                                    <div className="table-responsive">
+                                        <table className="member-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Email</th>
+                                                    <th>Role</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {members.map((member) => (
+                                                    <tr key={member._id}>
+                                                        <td>{member.name}</td>
+                                                        <td>{member.email}</td>
+                                                        <td>
+                                                            <span className="user-badge">{member.role}</span>
+                                                        </td>
+                                                        <td>
+                                                            <button
+                                                                onClick={() => handleDeleteUser(member)}
+                                                                className="btn-icon btn-delete"
+                                                                title="Remove User"
+                                                            >
+                                                                <FiTrash2 size={18} />
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 

@@ -56,6 +56,11 @@ export const authService = {
 
     isAuthenticated: () => {
         return !!localStorage.getItem('token');
+    },
+
+    deleteUser: async (id) => {
+        const response = await api.delete(`/auth/users/${id}`);
+        return response.data;
     }
 };
 
