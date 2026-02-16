@@ -23,7 +23,9 @@ const Navbar = () => {
                         <ThemeToggle />
                         <div className="nav-info">
                             <span>{user?.name}</span>
-                            <span className="user-badge">{user?.role}</span>
+                            <span className={`user-badge ${user?.role === 'MANAGER' ? 'user-badge-manager' : 'user-badge-member'}`}>
+                                {user?.role}
+                            </span>
                         </div>
                         <button onClick={handleLogout} className="btn btn-secondary">
                             Logout
