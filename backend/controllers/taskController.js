@@ -287,7 +287,7 @@ exports.assignTask = async (req, res) => {
 // @access  Private (MANAGER only)
 exports.getMembers = async (req, res) => {
     try {
-        const members = await User.find({ role: 'MEMBER' }).select('name email');
+        const members = await User.find({}).select('name email role');
 
         res.status(200).json({
             success: true,

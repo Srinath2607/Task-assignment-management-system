@@ -292,7 +292,7 @@ const ManagerDashboard = () => {
                                                                 <option value="" disabled>
                                                                     Assign to member...
                                                                 </option>
-                                                                {members.map((member) => (
+                                                                {members.filter(m => m.role === 'MEMBER').map((member) => (
                                                                     <option key={member._id} value={member._id}>
                                                                         {member.name}
                                                                     </option>
@@ -336,7 +336,9 @@ const ManagerDashboard = () => {
                                                         <td>{member.name}</td>
                                                         <td>{member.email}</td>
                                                         <td>
-                                                            <span className="user-badge">{member.role}</span>
+                                                            <span className={`user-badge ${member.role === 'MANAGER' ? 'user-badge-manager' : 'user-badge-member'}`}>
+                                                                {member.role}
+                                                            </span>
                                                         </td>
                                                         <td>
                                                             <button
@@ -448,7 +450,7 @@ const ManagerDashboard = () => {
                                     onChange={handleChange}
                                 >
                                     <option value="">Select a member...</option>
-                                    {members.map((member) => (
+                                    {members.filter(m => m.role === 'MEMBER').map((member) => (
                                         <option key={member._id} value={member._id}>
                                             {member.name} ({member.email})
                                         </option>
