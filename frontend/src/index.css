@@ -2542,3 +2542,76 @@ html {
     scroll-behavior: auto;
   }
 }
+
+/* ========================================
+   VERSION 2 IMPROVEMENTS
+   ======================================== */
+
+/* Progress Bar */
+.progress-container {
+  width: 100%;
+  height: 12px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--gradient-success);
+  border-radius: var(--radius-full);
+}
+
+/* Search & Filter Batch */
+.search-filter-batch {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+  flex-wrap: wrap;
+}
+
+.search-box {
+  flex: 1;
+  min-width: 250px;
+}
+
+.filters-box {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.filters-box select {
+  min-width: 150px;
+}
+
+/* Pagination */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-md);
+}
+
+.pagination-info {
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* Edit/Delete Icons */
+.btn-edit:hover {
+  background: var(--primary-light) !important;
+  color: var(--primary) !important;
+}
+
+.btn-delete:hover {
+  background: var(--error-light) !important;
+  color: var(--error) !important;
+}
+
+.task-actions-overlay {
+  display: flex;
+  gap: 8px;
+}

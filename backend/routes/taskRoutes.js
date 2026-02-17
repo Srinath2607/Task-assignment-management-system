@@ -5,6 +5,8 @@ const {
     getTasks,
     getTask,
     updateTaskStatus,
+    updateTask,
+    deleteTask,
     assignTask,
     getMembers
 } = require('../controllers/taskController');
@@ -22,7 +24,9 @@ router.route('/')
     .post(authorize('MANAGER'), createTask);  // Only MANAGER can create
 
 router.route('/:id')
-    .get(getTask);  // Both can view (authorization in controller)
+    .get(getTask)  // Both can view (authorization in controller)
+    .put(authorize('MANAGER'), updateTask)  // Only MANAGER can edit
+    .delete(authorize('MANAGER'), deleteTask);  // Only MANAGER can delete
 
 router.put('/:id/status', updateTaskStatus);  // MEMBER can update their tasks
 

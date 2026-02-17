@@ -14,14 +14,48 @@ const MemberDashboard = () => {
     const [loading, setLoading] = useState(true);
     const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'kanban'
 
+    // Search, Filter & Pagination States
+    const [searchTerm, setSearchTerm] = useState('');
+    const [debouncedSearch, setDebouncedSearch] = useState('');
+    const [filters, setFilters] = useState({
+        status: '',
+        priority: ''
+    });
+    const [page, setPage] = useState(1);
+    const [pagination, setPagination] = useState({
+        total: 0,
+        totalPages: 1,
+        completedTotal: 0
+    });
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(searchTerm);
+            setPage(1);
+        }, 300);
+        return () => clearTimeout(timer);
+    }, [searchTerm]);
+
     useEffect(() => {
         fetchTasks();
-    }, []);
+    }, [debouncedSearch, filters, page]);
 
     const fetchTasks = async () => {
         try {
-            const data = await taskService.getTasks();
+            const params = {
+                search: debouncedSearch,
+                status: filters.status,
+                priority: filters.priority,
+                page,
+                limit: 10
+            };
+            const data = await taskService.getTasks(params);
             setTasks(data.tasks);
+            setPagination({
+                total: data.total,
+                totalPages: data.totalPages,
+                completedTotal: data.completedTotal
+            });
         } catch (err) {
             toast.error('Failed to fetch tasks');
         } finally {
@@ -39,6 +73,14 @@ const MemberDashboard = () => {
         }
     };
 
+    const handleFilterChange = (e) => {
+        setFilters({
+            ...filters,
+            [e.target.name]: e.target.value
+        });
+        setPage(1);
+    };
+
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleDateString('en-US', {
             year: 'numeric',
@@ -47,19 +89,17 @@ const MemberDashboard = () => {
         });
     };
 
-    const getStatusClass = (status) => {
-        return status.toLowerCase().replace('_', '-');
-    };
-
     const isOverdue = (deadline) => {
         return new Date(deadline) < new Date() && new Date(deadline).toDateString() !== new Date().toDateString();
     };
 
     // Calculate analytics
-    const totalTasks = tasks.length;
+    const totalCount = pagination.total || tasks.length;
     const pendingTasks = tasks.filter(t => t.status === 'PENDING').length;
     const inProgressTasks = tasks.filter(t => t.status === 'IN_PROGRESS').length;
-    const completedTasks = tasks.filter(t => t.status === 'COMPLETED').length;
+    const completedTasksOnPage = tasks.filter(t => t.status === 'COMPLETED').length;
+
+    const completionRate = totalCount > 0 ? Math.round((pagination.completedTotal / totalCount) * 100) : 0;
 
     if (loading) {
         return (
@@ -106,7 +146,7 @@ const MemberDashboard = () => {
                     <div className="analytics-grid">
                         <AnalyticsCard
                             title="Total Tasks"
-                            value={totalTasks}
+                            value={totalCount}
                             icon={FiList}
                             gradient="linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
                         />
@@ -124,27 +164,70 @@ const MemberDashboard = () => {
                         />
                         <AnalyticsCard
                             title="Completed"
-                            value={completedTasks}
+                            value={pagination.completedTotal}
                             icon={FiCheckCircle}
                             gradient="linear-gradient(135deg, #10b981 0%, #059669 100%)"
                         />
                     </div>
 
-                    {/* Chart Section */}
+                    {/* Progress Bar Section */}
+                    {totalCount > 0 && (
+                        <div className="progress-section fade-in" style={{ marginTop: '24px' }}>
+                            <div className="flex-between mb-2">
+                                <span className="text-secondary" style={{ fontWeight: 600 }}>My Completion Rate</span>
+                                <span className="text-primary" style={{ fontWeight: 700 }}>{completionRate}%</span>
+                            </div>
+                            <div className="progress-container">
+                                <div
+                                    className="progress-bar-fill"
+                                    style={{
+                                        width: `${completionRate}%`,
+                                        transition: 'width 0.8s ease-in-out'
+                                    }}
+                                ></div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Search & Filter Bar */}
+                    <div className="search-filter-batch mt-4">
+                        <div className="search-box">
+                            <input
+                                type="text"
+                                placeholder="Search my tasks..."
+                                className="form-control"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                        </div>
+                        <div className="filters-box">
+                            <select name="status" className="form-control" value={filters.status} onChange={handleFilterChange}>
+                                <option value="">All Status</option>
+                                <option value="PENDING">Pending</option>
+                                <option value="IN_PROGRESS">In Progress</option>
+                                <option value="COMPLETED">Completed</option>
+                            </select>
+                            <select name="priority" className="form-control" value={filters.priority} onChange={handleFilterChange}>
+                                <option value="">All Priority</option>
+                                <option value="LOW">Low</option>
+                                <option value="MEDIUM">Medium</option>
+                                <option value="HIGH">High</option>
+                                <option value="CRITICAL">Critical</option>
+                            </select>
+                        </div>
+                    </div>
+
                     {tasks.length === 0 ? (
                         <div className="empty-state">
                             <div className="empty-state-icon">📝</div>
-                            <h3>No tasks assigned</h3>
-                            <p>You don't have any tasks assigned yet. Check back later!</p>
+                            <h3>No tasks matched your criteria</h3>
                         </div>
                     ) : (
                         <>
                             {viewMode === 'kanban' ? (
-                                /* Kanban Board View */
                                 <KanbanBoard tasks={tasks} onTaskMove={handleStatusUpdate} />
                             ) : (
                                 <>
-                                    {/* Chart Section */}
                                     <div className="charts-section">
                                         <div className="chart-card">
                                             <div className="chart-card-header">
@@ -155,7 +238,6 @@ const MemberDashboard = () => {
                                         </div>
                                     </div>
 
-                                    {/* Task Grid */}
                                     <div className="task-grid">
                                         {tasks.map((task) => (
                                             <div key={task._id} className="card task-card">
@@ -189,7 +271,7 @@ const MemberDashboard = () => {
                                                     </div>
                                                 </div>
 
-                                                <div className="task-actions">
+                                                <div className="task-actions mt-3">
                                                     <select
                                                         value={task.status}
                                                         onChange={(e) => handleStatusUpdate(task._id, e.target.value)}
@@ -203,34 +285,32 @@ const MemberDashboard = () => {
                                             </div>
                                         ))}
                                     </div>
+
+                                    {/* Pagination Controls */}
+                                    {pagination.totalPages > 1 && (
+                                        <div className="pagination-container mt-4 mb-4">
+                                            <button
+                                                className="btn btn-secondary"
+                                                disabled={page === 1}
+                                                onClick={() => setPage(p => p - 1)}
+                                            >
+                                                Previous
+                                            </button>
+                                            <span className="pagination-info">
+                                                Page {page} of {pagination.totalPages}
+                                            </span>
+                                            <button
+                                                className="btn btn-secondary"
+                                                disabled={page === pagination.totalPages}
+                                                onClick={() => setPage(p => p + 1)}
+                                            >
+                                                Next
+                                            </button>
+                                        </div>
+                                    )}
                                 </>
                             )}
                         </>
-                    )}
-
-                    {tasks.length > 0 && (
-                        <div className="mt-4">
-                            <div className="card">
-                                <h3 className="card-title">Task Summary</h3>
-                                <div className="task-info">
-                                    <div className="task-info-item">
-                                        <strong>Total Tasks:</strong> {tasks.length}
-                                    </div>
-                                    <div className="task-info-item">
-                                        <strong>Pending:</strong>{' '}
-                                        {tasks.filter((t) => t.status === 'PENDING').length}
-                                    </div>
-                                    <div className="task-info-item">
-                                        <strong>In Progress:</strong>{' '}
-                                        {tasks.filter((t) => t.status === 'IN_PROGRESS').length}
-                                    </div>
-                                    <div className="task-info-item">
-                                        <strong>Completed:</strong>{' '}
-                                        {tasks.filter((t) => t.status === 'COMPLETED').length}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     )}
                 </div>
             </div >

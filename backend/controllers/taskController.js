@@ -101,14 +101,47 @@ exports.getTasks = async (req, res) => {
             query.assignedTo = req.user.id;
         }
 
+        // Filtering
+        const { search, status, priority, assignedTo, page = 1, limit = 10 } = req.query;
+
+        if (search) {
+            query.title = { $regex: search, $options: 'i' };
+        }
+
+        if (status) {
+            query.status = status.toUpperCase();
+        }
+
+        if (priority) {
+            query.priority = priority.toUpperCase();
+        }
+
+        // Manager can filter by assigned member
+        if (req.user.role === 'MANAGER' && assignedTo) {
+            query.assignedTo = assignedTo;
+        }
+
+        // Pagination
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+        const total = await Task.countDocuments(query);
+        const totalPages = Math.ceil(total / parseInt(limit));
+
         const tasks = await Task.find(query)
             .populate('createdBy', 'name email')
             .populate('assignedTo', 'name email')
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(parseInt(limit));
+
+        const completedCount = await Task.countDocuments({ ...query, status: 'COMPLETED' });
 
         res.status(200).json({
             success: true,
             count: tasks.length,
+            total,
+            completedTotal: completedCount,
+            page: parseInt(page),
+            totalPages,
             tasks
         });
     } catch (error) {
@@ -204,6 +237,126 @@ exports.updateTaskStatus = async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error updating task status'
+        });
+    }
+};
+
+// @desc    Update task
+// @route   PUT /api/tasks/:id
+// @access  Private (MANAGER only)
+exports.updateTask = async (req, res) => {
+    try {
+        const { title, description, startDate, deadline, assignedTo, priority } = req.body;
+
+        let task = await Task.findById(req.params.id);
+
+        if (!task) {
+            return res.status(404).json({
+                success: false,
+                message: 'Task not found'
+            });
+        }
+
+        // Prepare updates
+        const updates = {};
+        if (title) updates.title = title;
+        if (description) updates.description = description;
+        if (startDate) updates.startDate = new Date(startDate);
+        if (deadline) updates.deadline = new Date(deadline);
+        if (priority) updates.priority = priority.toUpperCase();
+
+        // Validate dates if both or either updated
+        const finalStartDate = updates.startDate || task.startDate;
+        const finalDeadline = updates.deadline || task.deadline;
+
+        if (finalDeadline < finalStartDate) {
+            return res.status(400).json({
+                success: false,
+                message: 'Deadline must not be earlier than start date'
+            });
+        }
+
+        // Handle assignment if provided
+        if (assignedTo !== undefined) {
+            if (assignedTo === null || assignedTo === '') {
+                updates.assignedTo = null;
+                updates.assignedDate = null;
+            } else {
+                const member = await User.findById(assignedTo);
+                if (!member || member.role !== 'MEMBER') {
+                    return res.status(400).json({
+                        success: false,
+                        message: 'Invalid assigned user. Must be a MEMBER'
+                    });
+                }
+                updates.assignedTo = assignedTo;
+                // If it's a new assignment, update assignedDate
+                if (!task.assignedTo || task.assignedTo.toString() !== assignedTo) {
+                    updates.assignedDate = new Date();
+
+                    // Business rule check for new assignment date vs deadline
+                    const assignDate = new Date(updates.assignedDate);
+                    const deadlineDate = new Date(finalDeadline);
+                    assignDate.setHours(0, 0, 0, 0);
+                    deadlineDate.setHours(0, 0, 0, 0);
+
+                    if (deadlineDate < assignDate) {
+                        return res.status(400).json({
+                            success: false,
+                            message: 'Task deadline must not be earlier than assignment date'
+                        });
+                    }
+                }
+            }
+        }
+
+        task = await Task.findByIdAndUpdate(req.params.id, updates, {
+            new: true,
+            runValidators: true
+        });
+
+        await task.populate('createdBy', 'name email');
+        await task.populate('assignedTo', 'name email');
+
+        res.status(200).json({
+            success: true,
+            message: 'Task updated successfully',
+            task
+        });
+    } catch (error) {
+        console.error('Update task error:', error);
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Error updating task'
+        });
+    }
+};
+
+// @desc    Delete task
+// @route   DELETE /api/tasks/:id
+// @access  Private (MANAGER only)
+exports.deleteTask = async (req, res) => {
+    try {
+        const task = await Task.findById(req.params.id);
+
+        if (!task) {
+            return res.status(404).json({
+                success: false,
+                message: 'Task not found'
+            });
+        }
+
+        await task.deleteOne();
+
+        res.status(200).json({
+            success: true,
+            message: 'Task deleted successfully'
+        });
+    } catch (error) {
+        console.error('Delete task error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error deleting task'
         });
     }
 };
